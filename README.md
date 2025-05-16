@@ -24,3 +24,11 @@ Um jogo desenvolvido em Unity com foco em sustentabilidade, onde você controla 
 ## 💡 Objetivo do projeto
 
 Este projeto tem como foco o **aprendizado prático**, a aplicação de **boas práticas de desenvolvimento** e a **manutenção de documentação transparente**.
+
+## Licença
+
+Este projeto está licenciado sob a [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE).
+
+Você pode usar, modificar e distribuir este projeto livremente, inclusive para fins comerciais, **desde que credite a autoria original**.
+
+© 2025 [ikuroyoru](https://github.com/ikuroyoru)
