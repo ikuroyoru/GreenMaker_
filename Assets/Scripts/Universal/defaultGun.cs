@@ -37,11 +37,13 @@ public class defaultGun : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
-        if (hit.collider != null && hit.collider.CompareTag("Boss"))
+        if (hit.collider != null && hit.collider.CompareTag("Select"))
         {
-            targetBoss = hit.collider.gameObject;
+            // Sobe para o objeto pai do collider
+            targetBoss = hit.collider.transform.parent.gameObject;
             Debug.Log("Boss selecionado: " + targetBoss.name);
 
+            // Agora procura o filho chamado "Script" a partir do objeto pai
             Transform scriptChild = targetBoss.transform.Find("Script");
             if (scriptChild != null)
             {
@@ -54,17 +56,24 @@ public class defaultGun : MonoBehaviour
                 }
             }
 
-            Vector3 center = hit.collider.bounds.center;
+            if (currentTargetIcon != null)
+            {
+                Destroy(currentTargetIcon);
+            }
+
+            Collider2D bossCollider = targetBoss.GetComponent<Collider2D>();
+            Vector3 center = bossCollider != null ? bossCollider.bounds.center : targetBoss.transform.position;
 
             if (currentTargetIcon != null)
             {
                 Destroy(currentTargetIcon);
             }
 
+            // Instancia o ícone no centro do collider do boss
             currentTargetIcon = Instantiate(targetIconPrefab, center, Quaternion.identity, targetBoss.transform);
         }
-
     }
+
 
 
     void ShootAtBoss()
