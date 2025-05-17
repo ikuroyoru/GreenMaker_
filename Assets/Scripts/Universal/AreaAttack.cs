@@ -8,6 +8,7 @@ public class AreaAttack : MonoBehaviour
     public int damage = 10;
     public Transform attackCenter;
     public GameObject areaIndicatorPrefab; // Prefab com contorno (ex: um quad com SpriteRenderer)
+    public int attackRange = 5;
 
     void Update()
     {
@@ -63,16 +64,6 @@ public class AreaAttack : MonoBehaviour
                     enemy.takeDamage(damage);
                 }
             }
-        }
-    }
-
-    // Gizmo para visualização no editor
-    private void OnDrawGizmosSelected()
-    {
-        if (attackCenter != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(attackCenter.position, areaSize);
         }
     }
 }
