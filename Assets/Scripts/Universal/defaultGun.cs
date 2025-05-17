@@ -37,13 +37,29 @@ public class defaultGun : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
-        if (hit.collider != null && hit.collider.CompareTag("Select"))
+        if (hit.collider != null)
         {
-            // Sobe para o objeto pai do collider
-            targetBoss = hit.collider.transform.parent.gameObject;
+            GameObject hitObject = hit.collider.gameObject;
+
+            // Se o objeto clicado tem a tag "Boss", ele já é o alvo
+            if (hitObject.CompareTag("Boss"))
+            {
+                targetBoss = hitObject;
+            }
+            // Se for um objeto filho com tag "Select", sobe para o pai
+            else if (hitObject.CompareTag("Select"))
+            {
+                targetBoss = hitObject.transform.parent.gameObject;
+            }
+            else
+            {
+                // Se não for nem "Boss" nem "Select", ignora o clique
+                return;
+            }
+
             Debug.Log("Boss selecionado: " + targetBoss.name);
 
-            // Agora procura o filho chamado "Script" a partir do objeto pai
+            // Procura o filho chamado "Script" no objeto targetBoss
             Transform scriptChild = targetBoss.transform.Find("Script");
             if (scriptChild != null)
             {
@@ -56,23 +72,20 @@ public class defaultGun : MonoBehaviour
                 }
             }
 
+            // Destroi o ícone anterior, se existir
             if (currentTargetIcon != null)
             {
                 Destroy(currentTargetIcon);
             }
 
+            // Instancia novo ícone no centro do collider do boss
             Collider2D bossCollider = targetBoss.GetComponent<Collider2D>();
             Vector3 center = bossCollider != null ? bossCollider.bounds.center : targetBoss.transform.position;
 
-            if (currentTargetIcon != null)
-            {
-                Destroy(currentTargetIcon);
-            }
-
-            // Instancia o ícone no centro do collider do boss
             currentTargetIcon = Instantiate(targetIconPrefab, center, Quaternion.identity, targetBoss.transform);
         }
     }
+
 
 
 
