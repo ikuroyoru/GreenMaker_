@@ -1,9 +1,11 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Missile : MonoBehaviour
 {
     public GameObject target;
     public float speed = 5f;
+    [SerializeField] float damage = 20;
 
     void Update()
     {
@@ -35,11 +37,11 @@ public class Missile : MonoBehaviour
                 hp hpScript = scriptChild.GetComponent<hp>();
                 if (hpScript != null)
                 {
-                    hpScript.takeDamage(50);
+                    hpScript.takeDamage(damage);
                 }
             }
 
-            Debug.LogWarning("Colidiu com o Player");
+            // Debug.LogWarning("Colidiu com o Player");
             Destroy(gameObject);
         }
     }

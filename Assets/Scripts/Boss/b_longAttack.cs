@@ -3,97 +3,119 @@ using UnityEngine;
 
 public class b_longAttack : MonoBehaviour
 {
-    public int attackRange = 5;
-    public LayerMask playerLayer; // Defina no Inspector o layer do player
+    public float attackRange = 5f;
+    public LayerMask playerLayer;
+    public GameObject missilePrefab;
+    public float fireCooldown = 10f;
 
     private bool playerInside = false;
+    private GameObject currentPlayer;
+    private bool isShooting = false;
 
-    [SerializeField] private float triggerTimer = 3f;
-    [SerializeField] private float cooldown = 10f;
+    private GameObject trigger;
+    [SerializeField] GameObject triggerPrefab;
 
-    private bool isTriggerActivated = false;
-    private bool isCooldownActivated = false;
-
-    [SerializeField] private GameObject missilePrefab;
-    private GameObject missile;
-
-    private GameObject target; // Agora n„o È mais SerializeField
-
-    private GameObject currentPlayer; // <- Armazena o jogador detectado
-
-
-    void Start()
-    {
-        if (transform.parent != null)
-        {
-            target = transform.parent.gameObject;
-        }
-        else
-        {
-            Debug.LogError("b_longAttack: Objeto pai n„o encontrado. O target ser· nulo.");
-        }
-    }
+    private float animationTimer = 5f;
 
     void Update()
     {
         Collider2D playerDetector = Physics2D.OverlapCircle(transform.position, attackRange, playerLayer);
 
-        if (playerDetector != null && !playerInside && !isTriggerActivated && !isCooldownActivated)
+        if (playerDetector != null && !playerInside)
         {
             playerInside = true;
-            currentPlayer = playerDetector.gameObject; // <- Salva o jogador
-            Debug.Log("Player entrou na ·rea");
-            StartCoroutine(TriggeringPlayer(currentPlayer));
+            currentPlayer = playerDetector.gameObject;
+            Debug.LogWarning("Player Triggered: " + playerInside);
+            trigger = Instantiate(triggerPrefab, currentPlayer.transform);
         }
         else if (playerDetector == null && playerInside)
         {
             playerInside = false;
-            currentPlayer = null; // <- Limpa a referÍncia
-            Debug.Log("Player saiu da ·rea");
+            currentPlayer = null;
+            Debug.LogWarning("Player Triggered: " + playerInside);
+            Destroy(trigger);
+            trigger = null;
         }
 
+        if (playerInside && !isShooting)// S√≥ atira se o cooldown n√£o estiver ativo e o Player estiver no alcance
+        {
+            StartCoroutine(Shoot()); 
+        }
     }
 
-    IEnumerator TriggeringPlayer(GameObject player)
+    private IEnumerator Shoot()
     {
-        isTriggerActivated = true;
+        if (isShooting) yield break; // Garante que n√£o rode multiplas vezes
+        isShooting = true;
 
-        yield return new WaitForSeconds(triggerTimer);
+        float count = 0;
+        bool triggerActivation = trigger.GetComponent<Renderer>().enabled;
+        float interval = animationTimer / 10;
 
-        isTriggerActivated = false;
+        Debug.Log("Travando Mira");
 
-        if (!playerInside)
-            yield break;
-
-        if (missilePrefab == null || target == null)
+        while (count < animationTimer)
         {
-            Debug.LogError("missilePrefab ou target n„o atribuÌdo!");
+            yield return new WaitForSecondsRealtime(interval);
+
+            count += interval;
+            Debug.Log("PI");
+
+            triggerActivation = !triggerActivation;
+            trigger.GetComponent<Renderer>().enabled = triggerActivation;
+
+        }
+        Debug.Log("PIIIIIIIIIIIIII");
+        trigger.GetComponent<Renderer>().enabled = true;
+
+        if (currentPlayer != null)
+        {
+            ShootMissile();
+            Debug.Log("M√≠ssil Disparado");
+        }
+        else
+        {
+            Debug.Log("Alvo perdido");
+            isShooting = false;
             yield break;
         }
 
-        missile = Instantiate(missilePrefab, target.transform.position, Quaternion.identity, target.transform);
+        int cooldownCount = 0;
 
-        Missile missileScript = missile.GetComponent<Missile>();
-        if (missileScript != null)
+        while (cooldownCount < fireCooldown) // Espera antes do proximo missil
         {
-            missileScript.SetTarget(player); // O mÌssil persegue o jogador
+            yield return new WaitForSecondsRealtime(1f); 
+            cooldownCount += 1;
+            Debug.Log("Cooldown Ativo: " + cooldownCount + " Segundos");
         }
+        
+        isShooting = false;
+        Debug.LogWarning("Atirando: " + isShooting);
+    }
 
-        isCooldownActivated = true;
-        yield return new WaitForSeconds(cooldown);
-        isCooldownActivated = false;
+    private void ShootMissile()
+    {
+        if (missilePrefab != null && currentPlayer != null)
+        {
+            GameObject missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
+
+            // Corrige: chama SetTarget com o GameObject
+            Missile missileScript = missile.GetComponent<Missile>();
+            if (missileScript != null)
+            {
+                missileScript.SetTarget(currentPlayer);
+            }
+
+            // Debug.Log("Disparou m√≠ssil!");
+        }
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-
-        if (currentPlayer != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(currentPlayer.transform.position, Vector3.one);
-        }
     }
+
+
 
 }
