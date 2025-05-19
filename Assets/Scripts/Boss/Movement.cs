@@ -4,19 +4,44 @@ using UnityEngine;
 public class FollowPlayerWithDistance : MonoBehaviour
 {
     public float speed = 5f;
-    public float minDistance = 1.5f;       // Distância mínima até o player
-    public float maxDistance = 4f;         // Distância máxima antes de começar a seguir
-    public float returnSpeed = 3f;         // Velocidade ao retornar para a origem
+    public float minDistance = 1.5f;
+    public float maxDistance = 4f;
+    public float returnSpeed = 3f;
+
+    [Header("Sprites")]
+    [SerializeField] private Sprite frontSprite;
+    [SerializeField] private Sprite backSprite;
+    [SerializeField] private Sprite sideSprite;
 
     private Transform target;
     private bool isPlayerInRange = false;
     private Vector3 initialPosition;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         initialPosition = transform.position;
+
+        // Busca o SpriteRenderer do irmão "Sprite"
+        var parent = transform;
+        if (parent == null)
+        {
+            Debug.LogError("O objeto Boss deve ter um pai para encontrar o Sprite irmão.");
+            return;
+        }
+
+        var spriteTransform = parent.Find("Sprite");
+        if (spriteTransform == null)
+        {
+            Debug.LogError("Objeto 'Sprite' não encontrado como irmão no mesmo nível do Boss.");
+            return;
+        }
+
+        spriteRenderer = spriteTransform.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            Debug.LogWarning("SpriteRenderer não encontrado no objeto 'Sprite'.");
     }
 
     void FixedUpdate()
@@ -25,27 +50,31 @@ public class FollowPlayerWithDistance : MonoBehaviour
         {
             float distance = Vector2.Distance(transform.position, target.position);
 
-            if (distance > maxDistance) // Muito longe, persegue
+            if (distance > maxDistance)
             {
                 MoveTowards(target.position, speed);
             }
-            else if (distance < minDistance) // Muito perto, para
+            else if (distance < minDistance)
             {
-                // Pode adicionar comportamento de ataque aqui
+                // Aqui você pode colocar comportamento de ataque, se quiser
+                UpdateSprite(Vector2.zero); // parado
             }
             else
             {
-                // Dentro da zona ideal: observa o jogador
                 LookAtTarget(target.position);
+                UpdateSprite(target.position - transform.position);
             }
         }
         else
         {
-            // Player saiu, retorna para a posição inicial
             float distanceToOrigin = Vector2.Distance(transform.position, initialPosition);
             if (distanceToOrigin > 0.1f)
             {
                 MoveTowards(initialPosition, returnSpeed);
+            }
+            else
+            {
+                UpdateSprite(Vector2.zero); // parado
             }
         }
     }
@@ -55,20 +84,38 @@ public class FollowPlayerWithDistance : MonoBehaviour
         Vector2 direction = ((Vector2)targetPosition - rb.position).normalized;
         rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
         LookAtTarget(targetPosition);
+        UpdateSprite(direction);
     }
 
     private void LookAtTarget(Vector3 targetPosition)
     {
         float directionX = targetPosition.x - transform.position.x;
 
-        if (Mathf.Abs(directionX) > 0.01f) // Evita flip constante em zero
+        if (Mathf.Abs(directionX) > 0.01f && spriteRenderer != null)
         {
-            Vector3 scale = transform.localScale;
+            Vector3 scale = spriteRenderer.transform.localScale;
             scale.x = Mathf.Abs(scale.x) * Mathf.Sign(directionX);
-            transform.localScale = scale;
+            spriteRenderer.transform.localScale = scale;
         }
     }
 
+    private void UpdateSprite(Vector2 dir)
+    {
+        if (spriteRenderer == null)
+            return;
+
+        if (dir == Vector2.zero)
+            return; // evita troca desnecessária
+
+        if (Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            spriteRenderer.sprite = (dir.y > 0) ? backSprite : frontSprite;
+        }
+        else
+        {
+            spriteRenderer.sprite = sideSprite;
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
