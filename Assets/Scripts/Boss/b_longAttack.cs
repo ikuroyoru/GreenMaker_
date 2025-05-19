@@ -45,28 +45,48 @@ public class b_longAttack : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        if (isShooting) yield break; // Garante que não rode multiplas vezes
+        if (isShooting) yield break; // Garante que não rode múltiplas vezes
         isShooting = true;
 
         float count = 0;
-        bool triggerActivation = trigger.GetComponent<Renderer>().enabled;
-        float interval = animationTimer / 10;
+        float interval = animationTimer / 10f;
+
+        bool triggerActivation = false;
+        if (trigger != null && trigger.GetComponent<Renderer>() != null)
+            triggerActivation = trigger.GetComponent<Renderer>().enabled;
 
         Debug.Log("Travando Mira");
 
         while (count < animationTimer)
         {
             yield return new WaitForSecondsRealtime(interval);
-
             count += interval;
             Debug.Log("PI");
 
-            triggerActivation = !triggerActivation;
-            trigger.GetComponent<Renderer>().enabled = triggerActivation;
+            if (!playerInside || trigger == null || currentPlayer == null)
+            {
+                Debug.Log("Alvo perdido");
+                isShooting = false;
+                yield break;
+            }
 
+            // Pisca trigger
+            Renderer triggerRenderer = trigger.GetComponent<Renderer>();
+            if (triggerRenderer != null)
+            {
+                triggerActivation = !triggerActivation;
+                triggerRenderer.enabled = triggerActivation;
+            }
         }
+
         Debug.Log("PIIIIIIIIIIIIII");
-        trigger.GetComponent<Renderer>().enabled = true;
+
+        if (trigger != null)
+        {
+            Renderer triggerRenderer = trigger.GetComponent<Renderer>();
+            if (triggerRenderer != null)
+                triggerRenderer.enabled = true;
+        }
 
         if (currentPlayer != null)
         {
@@ -82,16 +102,17 @@ public class b_longAttack : MonoBehaviour
 
         int cooldownCount = 0;
 
-        while (cooldownCount < fireCooldown) // Espera antes do proximo missil
+        while (cooldownCount < fireCooldown) // Espera antes do próximo míssil
         {
-            yield return new WaitForSecondsRealtime(1f); 
-            cooldownCount += 1;
+            yield return new WaitForSecondsRealtime(1f);
+            cooldownCount++;
             Debug.Log("Cooldown Ativo: " + cooldownCount + " Segundos");
         }
-        
+
         isShooting = false;
         Debug.LogWarning("Atirando: " + isShooting);
     }
+
 
     private void ShootMissile()
     {
