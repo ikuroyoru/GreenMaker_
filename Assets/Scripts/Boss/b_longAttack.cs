@@ -3,10 +3,13 @@ using UnityEngine;
 
 public class b_longAttack : MonoBehaviour
 {
+    // VARIAVEIS QUE PODEM SE ALTERAR QUANDO O JOGADOR EVOLUIR DE NÍVEL
     public float attackRange = 5f;
+    public float fireCooldown = 10f;
+
+
     public LayerMask playerLayer;
     public GameObject missilePrefab;
-    public float fireCooldown = 10f;
 
     private bool playerInside = false;
     private GameObject currentPlayer;
@@ -15,7 +18,7 @@ public class b_longAttack : MonoBehaviour
     private GameObject trigger;
     [SerializeField] GameObject triggerPrefab;
 
-    private float animationTimer = 5f;
+    private float animationTimer = 5f; //TEMPO FIXO, É PARA SIMULAR O TEMPO DE ANIMAÇÃO QUANDO O BOSS FOR ATIRAR O MISSIL, ELE PODE SER ALTERADO, MAS NÃO MUDA CONFORME O JOGADOR EVOLUI.
 
     void Update()
     {
