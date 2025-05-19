@@ -251,12 +251,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 10
+  fireCooldown: 10
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  triggerTimer: 3
-  cooldown: 10
   missilePrefab: {fileID: 1683975532795204511, guid: c76a6a708c62bb241944605e97e2509e, type: 3}
+  triggerPrefab: {fileID: 0}
 --- !u!1 &6161174264240899801
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 4834415940750406078}
   - component: {fileID: 9088621738162088194}
   - component: {fileID: 4663503525995571735}
+  - component: {fileID: 322108919036789708}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Boss
@@ -368,6 +369,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 0.6}
   m_EdgeRadius: 0
+--- !u!114 &322108919036789708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161174264240899801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0673528b803b45c4b83941780241f72e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 3
+  minDistance: 3
+  maxDistance: 6
+  returnSpeed: 2
 --- !u!1001 &582673117656120867
 PrefabInstance:
   m_ObjectHideFlags: 0
