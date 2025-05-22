@@ -12,25 +12,30 @@ public class collect : MonoBehaviour
     private float damagePerSecond;
     private score scoreScript;
 
+    private SkillManager skillManagerScript;
+
     private void Start()
     {
         scoreScript = GetComponent<score>();
         damagePerSecond = damage / skillTimer;
+
+        skillManagerScript = GetComponent<SkillManager>();
     }
 
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            StartCoroutine(collectSkill());
-        }
 
-       
     }
 
-    private IEnumerator collectSkill()
+    public void Activate()
     {
+        StartCoroutine(collectSkill());
+    }
+
+    public IEnumerator collectSkill()
+    {
+        Debug.LogWarning("Skill de Coleta Ativada");
 
         float count = 0f;
         float points = damagePerSecond;
@@ -62,6 +67,8 @@ public class collect : MonoBehaviour
             yield return new WaitForSeconds(1f);
             count += 1;
         }
+
+        skillManagerScript.skillStatus(false);
 
         yield break;
     }

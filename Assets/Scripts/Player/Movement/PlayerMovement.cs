@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed = 3f;
+    public float speed = 3f;
 
     [Header("Sprites")]
     [SerializeField] private Sprite frontSprite;
@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
 
+    private bool isShooting;
+
     private void Awake()
     {
         // O script está no filho "Script", então pegamos o pai real ("Player")
@@ -24,22 +26,28 @@ public class PlayerMovement : MonoBehaviour
 
         // Pegamos o SpriteRenderer do filho chamado "Sprite"
         spriteRenderer = playerTransform.Find("Sprite").GetComponent<SpriteRenderer>();
+
+        isShooting = false;
     }
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
 
-        movement = movement.normalized;
+            movement = movement.normalized;
 
-        UpdateSprite(movement);
-        FlipPlayer(movement.x);
+            UpdateSprite(movement);
+            FlipPlayer(movement.x);
     }
 
     private void FixedUpdate()
     {
-        body.linearVelocity = movement * speed;
+        if (!isShooting)
+        {
+            body.linearVelocity = movement * speed;
+        }
+        else body.linearVelocity = Vector2.zero;
     }
 
     private void FlipPlayer(float directionX)
@@ -65,5 +73,10 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.sprite = sideSprite;
         }
+    }
+
+    public void updateMovement(bool shooting)
+    {
+        isShooting = shooting;
     }
 }

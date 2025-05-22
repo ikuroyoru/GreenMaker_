@@ -219,10 +219,10 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.15}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.23}
+    oldSize: {x: 2, y: 2}
+    newSize: {x: 2, y: 2}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
@@ -57935,6 +57935,7 @@ GameObject:
   - component: {fileID: 1204984857}
   - component: {fileID: 1204984858}
   - component: {fileID: 1204984859}
+  - component: {fileID: 1204984860}
   m_Layer: 0
   m_Name: Script
   m_TagString: Untagged
@@ -58035,10 +58036,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 21017663877352039, guid: cde1ce45b63158a47a199b987dea006b, type: 3}
-  projectileSpeed: 5
+  projectileSpeed: 30
   projectileLifetime: 3
-  projectileDamage: 20
-  cooldown: 0.5
+  projectileDamage: 5
+  cooldown: 1
+  projectileQTD: 5
+  fireInterval: 0.05
   targetIconPrefab: {fileID: 535641820783060476, guid: 364e20cc689fb574dbbd02941c5f95d8, type: 3}
   bossUI: {fileID: 182243500}
   bossUIObject: {fileID: 624953040}
@@ -58082,17 +58085,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1204984849}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17ef19f55c7836f4386a22f6f18237d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a1b19bd9c625054290d55de60ac0e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  areaSize: {x: 4, y: 4}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  damage: 10
-  attackCenter: {fileID: 1204984850}
-  areaIndicatorPrefab: {fileID: 7980054690282614609, guid: 932462733138621429e21626de6a63a7, type: 3}
   attackRange: 5
+  fireCooldown: 10
+  skillCooldown: 10
+--- !u!114 &1204984860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204984849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b277a311e660f843925a1ec4c7c2947, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1325513501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58132,6 +58142,10 @@ PrefabInstance:
     - target: {fileID: 676450870172948447, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.605
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144659311502184235, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1144659311502184235, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: spriteLado
@@ -58227,6 +58241,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1799484825456595202, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2236113101062497893, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3195633639285397972, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
@@ -58392,6 +58410,10 @@ PrefabInstance:
     - target: {fileID: 4834415940750406078, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4863725985182149223, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4908215153654773482, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_Radius
@@ -58946,15 +58968,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 505448692735325731, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_Radius
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 676450870172948447, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.605
       objectReference: {fileID: 0}
     - target: {fileID: 1144659311502184235, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144659311502184235, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: attackRange
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1144659311502184235, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: triggerPrefab
@@ -58972,6 +58998,10 @@ PrefabInstance:
       propertyPath: walkLado
       value: 
       objectReference: {fileID: 21300000, guid: fca11dd76962f45488369efabb44187b, type: 3}
+    - target: {fileID: 1480540075744312154, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1480540075744312154, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: attackLado
       value: 
@@ -59009,12 +59039,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2236113101062497893, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2236113101062497893, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: maxDistance
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2236113101062497893, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: minDistance
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3195633639285397972, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_AnchorMax.x
@@ -59042,7 +59076,7 @@ PrefabInstance:
       objectReference: {fileID: 8000348244394353489}
     - target: {fileID: 4113244177705010475, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: maxHP
-      value: 2000
+      value: 220
       objectReference: {fileID: 0}
     - target: {fileID: 4113244177705010475, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: hpOutput
@@ -59135,6 +59169,10 @@ PrefabInstance:
     - target: {fileID: 4834415940750406078, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4863725985182149223, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6161174264240899801, guid: 4cd8ef00f7787b94195a68833159660b, type: 3}
       propertyPath: m_Name
