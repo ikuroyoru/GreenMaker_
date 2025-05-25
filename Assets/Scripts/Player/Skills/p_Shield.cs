@@ -1,19 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class p_Shield : MonoBehaviour
 {
     [SerializeField] private GameObject shieldPrefab; // Prefab do escudo
     private GameObject activeShield;
-
-    private int shieldMaxHP = 30;
-    private int currentHP;
-
     private SkillManager skillManagerScript;
+
+    [SerializeField] public Slider slider;
 
     void Start()
     {
-        currentHP = shieldMaxHP;
-
         skillManagerScript = GetComponent<SkillManager>();
     }
 
@@ -24,32 +21,31 @@ public class p_Shield : MonoBehaviour
 
     public void Activate()
     {
-        Debug.LogWarning("Skill do Escudo Ativada");
+        Debug.Log("Skill do Escudo Ativada");
 
         if (activeShield == null && transform.parent.tag == "Player")
         {
-            activeShield = Instantiate(shieldPrefab, transform.position, Quaternion.identity, transform);
-        }
-        else
-        {
-            Destroy(activeShield); // Alterna/desativa se já estiver ativo
-            activeShield = null;
-            skillManagerScript.skillStatus(false);
-        }
-    }
-
-    public void TakeDamage(int damage)
-    {
-        if (activeShield != null)
-        {
-            currentHP -= damage;
-            if (currentHP <= 0)
+            if (transform.parent != null)
             {
-                Destroy(activeShield);
-                activeShield = null;
-                Debug.Log("Escudo destruído");
+                activeShield = Instantiate(shieldPrefab, transform.parent.position, Quaternion.identity, transform.parent);
+                shieldHP shieldScript = activeShield.GetComponentInChildren<shieldHP>();
 
-                skillManagerScript.skillStatus(false);
+                if (shieldScript != null)
+                {
+                    Debug.Log("Passando slider...");
+                    shieldScript.defUI(slider);
+                    shieldScript.InitializeShield(); // <-- garante que os valores estão atualizados
+                    shieldScript.getReference(skillManagerScript);
+                }
+                else
+                {
+                    Debug.LogWarning("shieldScript é null. Verifique se o prefab tem o script shieldHP.");
+                }
+
+
+
+                if (shieldScript != null) shieldScript.getReference(skillManagerScript);
+                else Debug.Log("Sem referencias");
             }
         }
     }

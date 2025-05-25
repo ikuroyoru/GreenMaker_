@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private bool isShooting;
+    public bool locked = false;
 
     private void Awake()
     {
@@ -32,21 +34,28 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-            movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
 
-            movement = movement.normalized;
+        movement = movement.normalized;
 
-            UpdateSprite(movement);
-            FlipPlayer(movement.x);
+        UpdateSprite(movement);
+        FlipPlayer(movement.x);
     }
 
     private void FixedUpdate()
     {
+        if (locked) // Se a skill de longe alcance estiver ativada, o jogador não pode andar
+        {
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (!isShooting)
         {
             body.linearVelocity = movement * speed;
         }
+
         else body.linearVelocity = Vector2.zero;
     }
 

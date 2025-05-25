@@ -85,7 +85,7 @@ public class b_longAttack : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        Debug.Log("shoot? : " + isShooting);
+        // Debug.Log("shoot? : " + isShooting);
 
         float count = 0;
         float interval = animationTimer / 10f;
@@ -164,7 +164,7 @@ public class b_longAttack : MonoBehaviour
         {
             GameObject missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
 
-            Missile missileScript = missile.GetComponent<Missile>();
+            Missile missileScript = missile.GetComponentInChildren<Missile>();
             if (missileScript != null)
             {
                 missileScript.SetTarget(currentPlayer);

@@ -28,13 +28,12 @@ public class FollowPlayerWithDistance : MonoBehaviour
         }
 
         rb = transform.parent.GetComponent<Rigidbody2D>();
+       
         if (rb == null)
             Debug.LogError("Rigidbody2D não encontrado no objeto pai.");
-       // else Debug.LogWarning("RB ativo");
 
         if (transform.GetComponent<Collider2D>() == null)
-            Debug.LogWarning("Collider2D não encontrado.");
-        else Debug.LogWarning("Collider ativo");
+            Debug.LogError("Collider2D não encontrado.");
 
             initialPosition = transform.parent.position;
     }

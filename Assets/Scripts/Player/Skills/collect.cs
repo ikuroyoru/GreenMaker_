@@ -1,31 +1,22 @@
+Ôªøusing UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using static UnityEditor.PlayerSettings;
 
 public class collect : MonoBehaviour
 {
-    private float scanRadius = 5f;  // Tornando o raio visÌvel e edit·vel no Inspector
-    private float skillTimer = 5f;
-    private float damage = 25f;
+    public GameObject areaVisualPrefab; // ‚Üê arraste o prefab com SpriteRenderer aqui no Inspector
+
+    [SerializeField] private float scanRadius = 5f;
+    [SerializeField] private float skillTimer = 5f;
+    [SerializeField] private float damage = 25f;
     private float damagePerSecond;
     private score scoreScript;
-
     private SkillManager skillManagerScript;
 
     private void Start()
     {
         scoreScript = GetComponent<score>();
         damagePerSecond = damage / skillTimer;
-
         skillManagerScript = GetComponent<SkillManager>();
-    }
-
-
-    void Update()
-    {
-
     }
 
     public void Activate()
@@ -37,19 +28,27 @@ public class collect : MonoBehaviour
     {
         Debug.LogWarning("Skill de Coleta Ativada");
 
+        // Instancia o c√≠rculo de visualiza√ß√£o
+        GameObject areaVisual = null;
+        if (areaVisualPrefab != null)
+        {
+            areaVisual = Instantiate(areaVisualPrefab, transform.position, Quaternion.identity);
+            areaVisual.transform.localScale = new Vector3(scanRadius * 2, scanRadius * 2, 1); // Ajusta o tamanho com base no raio
+            areaVisual.transform.parent = transform; // Faz com que siga o jogador, se necess√°rio
+        }
+
         float count = 0f;
         float points = damagePerSecond;
 
         while (count < skillTimer)
         {
-            Collider2D[]  lixos = Physics2D.OverlapCircleAll(transform.position, scanRadius);
+            Collider2D[] lixos = Physics2D.OverlapCircleAll(transform.position, scanRadius);
 
             if (lixos != null)
             {
                 foreach (Collider2D lixo in lixos)
                 {
-                    if (lixo.CompareTag("trash"))  // Verifica se o objeto tem a tag "Trash", que È o LIXO
-                      // L”GICA DE INTERA«√O COM O LIXO
+                    if (lixo.CompareTag("trash"))
                     {
                         trash trashScript = lixo.GetComponent<trash>();
                         GameObject player = transform.root.gameObject;
@@ -58,7 +57,6 @@ public class collect : MonoBehaviour
                         {
                             trashScript.TakeDamage(damagePerSecond, player);
                             scoreScript.updateGeneralPoints(points);
-
                         }
                     }
                 }
@@ -68,19 +66,12 @@ public class collect : MonoBehaviour
             count += 1;
         }
 
+        // Destroi o c√≠rculo de visualiza√ß√£o ao final da skill
+        if (areaVisual != null)
+        {
+            Destroy(areaVisual);
+        }
+
         skillManagerScript.skillStatus(false);
-
-        yield break;
     }
-
-
-    /* Este mÈtodo È chamado apenas no editor, para desenhar o gizmo
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;  // Cor do gizmo
-        Gizmos.DrawWireSphere(transform.position, scanRadius);  // Desenha o cÌrculo de detecÁ„o
-    }
-    */
-
-
 }

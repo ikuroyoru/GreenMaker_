@@ -30,37 +30,37 @@ public class SkillManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 defaculAttackScript.Shoot();
-                activatedSkill = true;
+                skillStatus(true);
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 longAttackScript.Activate();
-                activatedSkill = true;
+                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                // Código que será executado ao pressionar a tecla "1"
-                activatedSkill = true;
+                // Código que será executado ao pressionar a tecla "2"
+                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 shieldScript.Activate();
-                activatedSkill = true;
+                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 collectScript.Activate();
-                activatedSkill = true;
+                skillStatus(true);
             }
         }
     }
 
     public void skillStatus(bool status)
     {
-        activatedSkill = status;
-        Debug.Log("Nenhuma Skill Ativa");
+        activatedSkill = status; // Atualiza o status de execução de skill, caso a condição esteja ativada, não será possível executar outras skills
+        Debug.Log("Executando skill: " + activatedSkill);
     }
 }
