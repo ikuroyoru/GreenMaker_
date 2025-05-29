@@ -58088,6 +58088,7 @@ GameObject:
   - component: {fileID: 1204984859}
   - component: {fileID: 1204984860}
   - component: {fileID: 1204984861}
+  - component: {fileID: 1204984862}
   m_Layer: 0
   m_Name: Script
   m_TagString: Untagged
@@ -58123,9 +58124,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  frontSprite: {fileID: 21300000, guid: 092c81e134b3e6b45acedd90e4046770, type: 3}
-  backSprite: {fileID: 21300000, guid: ad211494efac04b4ab36ebc3c0616c61, type: 3}
-  sideSprite: {fileID: 21300000, guid: e175f1460aeb7364495ae52ced9d3bd7, type: 3}
   locked: 0
 --- !u!114 &1204984852
 MonoBehaviour:
@@ -58276,6 +58274,24 @@ MonoBehaviour:
   triggerIconPrefab: {fileID: 535641820783060476, guid: 364e20cc689fb574dbbd02941c5f95d8, type: 3}
   hpBar: {fileID: 1133276441}
   enemyUIScript: {fileID: 182243500}
+--- !u!114 &1204984862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204984849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8258e6f5a9d8e4297c1a5a5cbe60b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkFrente: {fileID: 21300000, guid: 092c81e134b3e6b45acedd90e4046770, type: 3}
+  walkCostas: {fileID: 21300000, guid: ad211494efac04b4ab36ebc3c0616c61, type: 3}
+  walkLado: {fileID: 21300000, guid: e175f1460aeb7364495ae52ced9d3bd7, type: 3}
+  attackFrente: {fileID: 21300000, guid: 008f16958b74b7b4fa3191659ea0cdf7, type: 3}
+  attackCostas: {fileID: 21300000, guid: 090d5f09194d60545b0031b206c138b4, type: 3}
+  attackLado: {fileID: 21300000, guid: 2196b8898b5dc084caba103d45087a46, type: 3}
 --- !u!4 &1528703390 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4041822666096200937, guid: 78c0cd1d1300af34faa51cb2cee9a785, type: 3}
@@ -58354,6 +58370,30 @@ PrefabInstance:
       propertyPath: icon
       value: 
       objectReference: {fileID: 21300000, guid: c6d5a25ac0d08f54185acefb1ef5067a, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: walkLado
+      value: 
+      objectReference: {fileID: 21300000, guid: fca11dd76962f45488369efabb44187b, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: attackLado
+      value: 
+      objectReference: {fileID: 21300000, guid: ba19dba82927ba947a288d3bbb077dcc, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: walkCostas
+      value: 
+      objectReference: {fileID: 21300000, guid: 86f990ce16b192540914a2cd1b390411, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: walkFrente
+      value: 
+      objectReference: {fileID: 21300000, guid: 9f97dd9a3bbf8924fa0500049949048b, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: attackCostas
+      value: 
+      objectReference: {fileID: 21300000, guid: 66375b46ee676e2498083ad834b917d3, type: 3}
+    - target: {fileID: 3127634057323906880, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
+      propertyPath: attackFrente
+      value: 
+      objectReference: {fileID: 21300000, guid: 4e3b7acfdbb2d4640bc51e71b33e4a1b, type: 3}
     - target: {fileID: 3823923948097203065, guid: 57b547eeec2a8884cb99debde01679c2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.7716126
