@@ -1,19 +1,12 @@
-using System.Net.Sockets;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 3f;
 
-    [Header("Sprites")]
-    [SerializeField] private Sprite frontSprite;
-    [SerializeField] private Sprite backSprite;
-    [SerializeField] private Sprite sideSprite;
-
     private Rigidbody2D body;
     private Vector2 movement;
     private Transform playerTransform;
-    private SpriteRenderer spriteRenderer;
 
     private bool isShooting;
     public bool locked = false;
@@ -26,9 +19,6 @@ public class PlayerMovement : MonoBehaviour
         // Pegamos o Rigidbody2D do pai
         body = playerTransform.GetComponent<Rigidbody2D>();
 
-        // Pegamos o SpriteRenderer do filho chamado "Sprite"
-        spriteRenderer = playerTransform.Find("Sprite").GetComponent<SpriteRenderer>();
-
         isShooting = false;
     }
 
@@ -38,49 +28,17 @@ public class PlayerMovement : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
 
         movement = movement.normalized;
-
-        UpdateSprite(movement);
-        FlipPlayer(movement.x);
     }
 
     private void FixedUpdate()
     {
-        if (locked) // Se a skill de longe alcance estiver ativada, o jogador não pode andar
+        if (locked || isShooting)
         {
             body.linearVelocity = Vector2.zero;
-            return;
         }
-
-        if (!isShooting)
+        else
         {
             body.linearVelocity = movement * speed;
-        }
-
-        else body.linearVelocity = Vector2.zero;
-    }
-
-    private void FlipPlayer(float directionX)
-    {
-        if (Mathf.Abs(directionX) > 0.01f)
-        {
-            Vector3 scale = spriteRenderer.transform.localScale;
-            scale.x = Mathf.Sign(directionX) * Mathf.Abs(scale.x);
-            spriteRenderer.transform.localScale = scale;
-        }
-    }
-
-    private void UpdateSprite(Vector2 dir)
-    {
-        if (Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
-        {
-            if (dir.y > 0)
-                spriteRenderer.sprite = backSprite;
-            else if (dir.y < 0)
-                spriteRenderer.sprite = frontSprite;
-        }
-        else if (Mathf.Abs(dir.x) > 0)
-        {
-            spriteRenderer.sprite = sideSprite;
         }
     }
 

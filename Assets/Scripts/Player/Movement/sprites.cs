@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class playerAnimationController : MonoBehaviour
+public class sprites : MonoBehaviour
 {
     [Header("Sprites Andando")]
     public Sprite walkFrente;
@@ -17,44 +17,43 @@ public class playerAnimationController : MonoBehaviour
 
     void Awake()
     {
-        spriteRenderer = GetComponentInParent<SpriteRenderer>();
+        spriteRenderer = transform.parent.Find("Sprite").GetComponent<SpriteRenderer>();
+
         mainCamera = Camera.main;
     }
 
     void Update()
     {
-        UpdateSpriteWithMouse(Input.GetMouseButton(0)); // Exemplo: ataca se clicar com o botão esquerdo
+        bool isAttacking = Input.GetMouseButton(0); // Exemplo: atacando se clicar com o botão esquerdo
+        UpdateSpriteWithMouse(isAttacking);
     }
 
-    public void UpdateSpriteWithMouse(bool isAttacking)
+    void UpdateSpriteWithMouse(bool isAttacking)
     {
-        // Pega a posição do mouse em coordenadas de mundo
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0f;
 
         Vector3 playerPos = transform.position;
         Vector3 direction = mouseWorldPos - playerPos;
-        float angle = Vector2.SignedAngle(Vector2.up, direction);
 
-        // Zera o flip
+        float angle = Vector2.SignedAngle(Vector2.up, direction);
         spriteRenderer.flipX = false;
 
         if (Mathf.Abs(angle) < 45f)
         {
-            // Olhando para trás (costas)
+            // Costas
             spriteRenderer.sprite = isAttacking ? attackCostas : walkCostas;
         }
         else if (Mathf.Abs(angle) > 135f)
         {
-            // Olhando para frente
+            // Frente
             spriteRenderer.sprite = isAttacking ? attackFrente : walkFrente;
         }
         else
         {
-            // Olhando para o lado
+            // Lado
             spriteRenderer.sprite = isAttacking ? attackLado : walkLado;
 
-            // Se o mouse estiver à esquerda, espelha o sprite
             if (angle > 0)
             {
                 spriteRenderer.flipX = true;
