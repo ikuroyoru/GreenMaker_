@@ -30,30 +30,25 @@ public class SkillManager : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 defaculAttackScript.Shoot();
-                skillStatus(true);
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 longAttackScript.Activate();
-                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 // Código que será executado ao pressionar a tecla "2"
-                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 shieldScript.Activate();
-                skillStatus(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 collectScript.Activate();
-                skillStatus(true);
             }
         }
     }

@@ -1,81 +1,122 @@
 using System.Collections;
-using System.Diagnostics.Contracts;
 using UnityEngine;
 
 public class longAttack : MonoBehaviour
 {
+    [SerializeField] private int projectileLimit = 3;
+    [SerializeField] private float batteryCostPerShot = 50f;
+
     public float attackRange = 5f;
     public float fireCooldown = 10f;
     public float skillCooldown = 10f;
-
-    private bool isShooting = false;
-
-    private PlayerMovement movementScript;
+    private bool cooldownActivated;
 
     [SerializeField] private GameObject missilePrefab;
+
+    private bool isShooting = false;
+    private int shotsFired = 0;
+
     private GameObject target;
 
-    private projectileHit projectileHitScript;
+    private PlayerMovement movementScript;
+    private SkillManager skillManagerScript;
+    private p_Battery batteryScript;
 
-    void Awake()
+    private void Awake()
     {
         movementScript = GetComponent<PlayerMovement>();
+        skillManagerScript = GetComponent<SkillManager>();
+        batteryScript = GetComponent<p_Battery>();
+
+        cooldownActivated = false;
+    }
+
+    private void Update()
+    {
+        if (!isShooting) return;
+
+        if (Input.GetMouseButtonDown(0) && shotsFired < projectileLimit)
+        {
+            if (batteryScript.currentCharge() < batteryCostPerShot)
+            {
+                Debug.LogWarning("Bateria insuficiente para atirar.");
+                return;
+            }
+
+            batteryScript.UseAbility(batteryCostPerShot);
+
+            if (target == null)
+            {
+                Debug.LogWarning("Nenhum alvo definido para o míssil.");
+                return;
+            }
+
+            GameObject projectile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
+
+            Missile missileScript = projectile.GetComponentInChildren<Missile>();
+            if (missileScript != null)
+            {
+                missileScript.SetTarget(target);
+            }
+
+            projectileHit projectileHitScript = projectile.GetComponentInChildren<projectileHit>();
+            if (projectileHitScript != null)
+            {
+                projectileHitScript.shooter(transform.parent.gameObject.tag);
+            }
+
+            shotsFired++;
+
+            if (shotsFired >= projectileLimit)
+            {
+                EndSkill();
+                StartCoroutine(setCooldown());
+            }
+        }
+
+
     }
 
     public void Activate()
     {
-        Debug.LogWarning("Skill de Longo Alcance Ativada");
-        isShooting = !isShooting;
-
-        movementScript.locked = isShooting; // Desativa o movimento enquanto atira
-
-        Debug.Log("Ativado? " + isShooting);
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0) && movementScript.locked) // Apenas atira mísseis se a skill estiver ativada
+        if (!cooldownActivated)
         {
-            StartCoroutine(shooting());
-        }
-    }
+            Debug.LogWarning("Skill de Longo Alcance Ativada");
 
-    IEnumerator shooting()
-    {
-        if (target == null)
-        {
-            Debug.LogWarning("Nenhum alvo definido para o míssil.");
-            yield break;
-        }
-
-        // Instancia o míssil na posição do jogador
-        GameObject projectile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
-
-        // Pega o script do míssil e define o alvo
-        Missile missileScript = projectile.GetComponentInChildren<Missile>();
-        if (missileScript != null)
-        {
-            missileScript.SetTarget(target);
+            isShooting = true;
+            shotsFired = 0;
+            movementScript.locked = true;
+            skillManagerScript.skillStatus(true);
+            Debug.LogWarning("Skill Ativada");
         }
         else
         {
-            Debug.LogWarning("Script 'Missile' não encontrado no projétil.");
+            Debug.LogWarning("Longo Alcance NÃO ATIVADO, há cooldown ATIVO");
         }
-
-        // Envia a tag do atirador (opcional, caso esteja usando em `projectileHit`)
-        projectileHit projectileHitScript = projectile.GetComponentInChildren<projectileHit>();
-        if (projectileHitScript != null)
-        {
-            projectileHitScript.shooter(transform.parent.gameObject.tag);
-        }
-
-        yield break;
+        
     }
 
+    private void EndSkill()
+    {
+        isShooting = false;
+        movementScript.locked = false;
+        skillManagerScript.skillStatus(false);
 
+        Debug.Log("Skill de Longo Alcance finalizada");
+    }
 
     public void setTarget(GameObject _target)
     {
         target = _target;
+    }
+
+    public IEnumerator setCooldown()
+    {
+        cooldownActivated = true;
+
+        yield return new WaitForSeconds(skillCooldown);
+
+        cooldownActivated = false;
+
     }
 }

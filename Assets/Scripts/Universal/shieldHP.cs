@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class shieldHP : MonoBehaviour
 {
-    [SerializeField] float hp;
+    [SerializeField] private float hp;
     private float maxHP;
+
     private SkillManager skillScript;
+    private p_Shield shieldParent;
 
     private Slider slider;
     private TextMeshProUGUI shieldOutput;
@@ -23,10 +25,9 @@ public class shieldHP : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
     void Update()
     {
+        // Debug/teste local – remova em produção
         if (Input.GetKeyDown(KeyCode.O))
         {
             takeDamage(10f);
@@ -36,17 +37,30 @@ public class shieldHP : MonoBehaviour
     public void takeDamage(float amount)
     {
         hp -= amount;
-        // Debug.Log("hp: " + hp + "/" + maxHP);
         updateShieldUI();
 
         if (hp <= 0)
         {
-            if(transform.parent.gameObject.tag == "Player")
-            {
-                skillScript.skillStatus(false);
-            }
-            Destroy(transform.parent.gameObject);
+            HandleShieldBreak();
         }
+    }
+
+    void HandleShieldBreak()
+    {
+        if (shieldParent != null)
+        {
+            shieldParent.NotifyShieldDestroyed();
+        }
+        else
+        {
+            Debug.LogWarning("p_Shield (shieldParent) não atribuído.");
+            if (transform.parent != null && transform.parent.gameObject.CompareTag("Player"))
+            {
+                skillScript?.skillStatus(false);
+            }
+        }
+
+        Destroy(transform.parent.gameObject); // Destrói o escudo (filho do jogador)
     }
 
     public void getReference(SkillManager script)
@@ -54,10 +68,21 @@ public class shieldHP : MonoBehaviour
         skillScript = script;
     }
 
+    public void SetShieldParent(p_Shield parent)
+    {
+        shieldParent = parent;
+    }
+
     void updateShieldUI()
     {
-        slider.value = hp;
-        shieldOutput.text = hp + " / " + maxHP;
+        if (slider != null)
+        {
+            slider.value = hp;
+            if (shieldOutput != null)
+            {
+                shieldOutput.text = hp + " / " + maxHP;
+            }
+        }
     }
 
     public void defUI(Slider _slider)
@@ -66,18 +91,22 @@ public class shieldHP : MonoBehaviour
         shieldOutput = slider.GetComponentInChildren<TextMeshProUGUI>();
 
         if (shieldOutput == null)
+        {
             Debug.LogWarning("Nenhum TextMeshProUGUI encontrado como filho do Slider.");
+        }
 
         if (slider != null)
         {
             slider.maxValue = maxHP;
             slider.value = hp;
-            shieldOutput.text = hp + " / " + maxHP;
+            if (shieldOutput != null)
+            {
+                shieldOutput.text = hp + " / " + maxHP;
+            }
         }
         else
         {
             Debug.LogWarning("Slider está null na defUI!");
         }
     }
-
 }

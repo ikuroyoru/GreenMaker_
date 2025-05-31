@@ -19,9 +19,6 @@ public class Materials : MonoBehaviour
             int dropChance = 500; // Chance de gerar um plastico
             int chance = Random.Range(1, 1001); // Gera um número entre 1 e 1000
 
-            // Exibir o número aleatório gerado no console
-            Debug.Log($"Chance gerada: {chance}%");
-
             if (chance <= dropChance)
             {
                 inventoryScript.updatePlastico(qtd, player);

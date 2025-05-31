@@ -7,19 +7,17 @@ public class defaultAttack : MonoBehaviour
     [SerializeField] float projectileSpeed = 20f;
     [SerializeField] float projectileLifetime = 3f;
     [SerializeField] float projectileDamage = 20f;
-    [SerializeField] float cooldown = 0.1f;
+    [SerializeField] float cooldown = 0.2f;
     [SerializeField] int projectileQTD = 10;
-    [SerializeField] float fireInterval = 0.1f; // Intervalo entre os disparos da rajada
+    [SerializeField] float fireInterval = 0.1f;
 
     private bool activeCooldown;
-
-    private GameObject targetBoss; // Referência ao boss clicado
+    private bool isShooting;
 
     [SerializeField] private GameObject targetIconPrefab;
-    private GameObject currentTargetIcon;
 
-    [SerializeField] private BossHealthUI bossUI; // Referência no inspector
-    [SerializeField] private GameObject bossUIObject; // UI GameObject
+    [SerializeField] private BossHealthUI bossUI;
+    [SerializeField] private GameObject bossUIObject;
 
     private SkillManager skillManagerScript;
 
@@ -27,16 +25,20 @@ public class defaultAttack : MonoBehaviour
     {
         activeCooldown = false;
         skillManagerScript = GetComponent<SkillManager>();
+
+        isShooting = false;
     }
 
     void Update()
     {
+        // Nada necessário aqui por enquanto
     }
 
     public void Shoot()
     {
-        if (!activeCooldown)
+        if (!activeCooldown && !isShooting)
         {
+            isShooting = true;
             StartCoroutine(shooting());
         }
     }
@@ -44,34 +46,29 @@ public class defaultAttack : MonoBehaviour
     IEnumerator shooting()
     {
         int count = 0;
-        float interval = fireInterval; //Intervalo entre os disparos da rajada.
 
         while (count < projectileQTD)
         {
-            // Obtém a posição do mouse no mundo
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0f;
 
-            // Calcula a direção entre o player e o mouse
             Vector3 direction3D = mouseWorldPos - transform.position;
-
             Vector2 direction = direction3D.normalized;
 
             GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 
-            // Rotaciona o projétil na direção correta
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
 
-            // Aplica os valores ao script do projétil
             defaultProjectile pScript = projectile.GetComponent<defaultProjectile>();
             pScript.SetValues(projectileSpeed, projectileLifetime, projectileDamage, direction);
 
-            yield return new WaitForSeconds(interval);
-            count += 1;
+            yield return new WaitForSeconds(fireInterval);
+            count++;
         }
 
         StartCoroutine(applyCooldown());
+        isShooting = false;
     }
 
     IEnumerator applyCooldown()
@@ -79,30 +76,14 @@ public class defaultAttack : MonoBehaviour
         activeCooldown = true;
         yield return new WaitForSeconds(cooldown);
         activeCooldown = false;
-        skillManagerScript.skillStatus(false);
+
+        if (skillManagerScript != null)
+        {
+            skillManagerScript.skillStatus(false);
+        }
+        else
+        {
+            Debug.LogWarning("SkillManager não encontrado para desativar o status da skill.");
+        }
     }
-
-    /*
-     
-    public void ShootAtBoss()
-    {
-        Vector3 bossCenter = targetBoss.GetComponent<Collider2D>().bounds.center;
-        Vector3 direction3D = bossCenter - transform.position;
-        direction3D.z = 0f;
-        Vector2 direction = direction3D.normalized;
-
-        GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
-
-        defaultProjectile pScript = projectile.GetComponent<defaultProjectile>();
-        pScript.SetValues(projectileSpeed, projectileLifetime, projectileDamage, direction);
-
-        StartCoroutine(applyCooldown());
-    }
-
-    */
-
-
 }

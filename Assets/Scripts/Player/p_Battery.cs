@@ -1,59 +1,62 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections;
 
 public class p_Battery : MonoBehaviour
 {
-    private float defaultBattery = 100f;
-    private float currentBattery;
+    private float defaultBattery = 1000f; // Pontos de carga iniciais
+    private float currentBattery;         // Pontos de carga atuais
+    private bool robotActivated = false;
+    private float batteryPercent;
 
     [SerializeField] private TextMeshProUGUI batteryOutput;
     [SerializeField] private Slider batteryBar;
 
-    private Coroutine batteryDrainCoroutine;
+    private GameOverManager gameOverManager;
 
     private void Start()
     {
         currentBattery = defaultBattery;
-        batteryBar.maxValue = defaultBattery;
-        UpdateBatteryUI();
-        batteryDrainCoroutine = StartCoroutine(DrainBatteryOverTime());
+        UpdateBatteryUI(); // Atualiza os valores na UI
+
+        gameOverManager = GetComponent<GameOverManager>();
+        if (gameOverManager == null)
+        {
+            Debug.LogError("GameOverManager não encontrado no mesmo GameObject.");
+        }
     }
 
     private void Update()
     {
-        // Simula uma habilidade que consome 10% ao pressionar H
+        // Simula uma habilidade que consome 990 pontos ao pressionar H
         if (Input.GetKeyDown(KeyCode.H))
         {
-            UseAbility(10f); // 10% do total
+            UseAbility(990f);
         }
-    }
 
-    private IEnumerator DrainBatteryOverTime()
-    {
-        while (true)
+        if (currentBattery > 0)
         {
-            if (currentBattery > 0)
+            robotActivated = true;
+        }
+        else
+        {
+            robotActivated = false;
+
+            if (gameOverManager != null && !gameOverManager.triggerGameOver)
             {
-                currentBattery -= defaultBattery * 0.01f; // 1% por segundo
-                currentBattery = Mathf.Max(currentBattery, 0f);
-                UpdateBatteryUI();
+                gameOverManager.reason = GameOverReason.BatteryDepleted;
+                gameOverManager.triggerGameOver = true;
             }
-
-            yield return new WaitForSeconds(1f);
         }
     }
 
-    private void UseAbility(float percentCost)
+    public void UseAbility(float charge)
     {
-        float cost = defaultBattery * (percentCost / 100f);
-
-        if (currentBattery >= cost)
+        if (currentBattery >= charge)
         {
-            currentBattery -= cost;
+            currentBattery -= charge;
+            batteryPercent = (currentBattery / defaultBattery) * 100f;
             UpdateBatteryUI();
-            Debug.Log($"Habilidade usada: -{percentCost}%");
         }
         else
         {
@@ -63,7 +66,18 @@ public class p_Battery : MonoBehaviour
 
     private void UpdateBatteryUI()
     {
+        batteryBar.maxValue = defaultBattery;
         batteryBar.value = currentBattery;
-        batteryOutput.text = $"{Mathf.RoundToInt(currentBattery)}%";
+        batteryOutput.text = $"{currentBattery} / {defaultBattery} - ({batteryPercent:F1}%)";
+    }
+
+    public bool robotStatus()
+    {
+        return robotActivated;
+    }
+
+    public float currentCharge()
+    {
+        return currentBattery;
     }
 }

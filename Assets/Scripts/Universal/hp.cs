@@ -37,8 +37,8 @@ public class hp : MonoBehaviour
     {
         hpBar.maxValue = maxHP;
 
-        Debug.Log("BOSS: Dano Recebido: " + damage);
-        Debug.LogWarning("HP: " + currentHP + " / " + maxHP);
+        // Debug.Log("BOSS: Dano Recebido: " + damage);
+        // Debug.LogWarning("HP: " + currentHP + " / " + maxHP);
 
         currentHP -= damage;
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
@@ -67,7 +67,7 @@ public class hp : MonoBehaviour
             Destroy(entity);
         }
 
-        Debug.Log("Slider real: " + hpBar.name);
+        // Debug.Log("Slider real: " + hpBar.name);
     }
 
     private void Update()

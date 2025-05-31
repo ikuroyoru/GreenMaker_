@@ -20,6 +20,7 @@ public class trash : MonoBehaviour
         {
             Debug.LogWarning("GameManager não encontrado.");
         }
+        else Debug.LogWarning("GameManager Encontrado");
     }
 
 
@@ -32,6 +33,7 @@ public class trash : MonoBehaviour
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
+            Debug.Log("Destruir");
         }
 
         // Buscar o script Materials no player

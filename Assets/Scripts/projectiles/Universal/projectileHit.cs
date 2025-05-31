@@ -69,7 +69,7 @@ public class projectileHit : MonoBehaviour
     public void shooter(string tag)
     {
         shooterTag = tag;
-        Debug.Log("Atirador: " + shooterTag);
+        // Debug.Log("Atirador: " + shooterTag);
     }
 
     void destroyMissile()

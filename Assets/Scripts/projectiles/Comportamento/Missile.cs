@@ -31,11 +31,13 @@ public class Missile : MonoBehaviour
 
         string alvo = target.tag;
 
+        /*
         if (alvo != null)
         {
             Debug.Log("O alvo é: " + alvo);
         }
         else Debug.Log("Sem alvo definido");
+        */
     }
 }
 
