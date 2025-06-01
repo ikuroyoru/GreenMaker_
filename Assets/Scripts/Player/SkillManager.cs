@@ -1,61 +1,200 @@
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+[System.Serializable]
+public class SkillLevelStats
+{
+    public int damage;
+    public float cooldown;
+    public float duration;
+    public int quantity;
+    public int charge; // ‚Üê NOVO
+}
+
+[System.Serializable]
+public class SkillUI
+{
+    public TextMeshProUGUI dmgText;
+    public TextMeshProUGUI cooldownText;
+    public TextMeshProUGUI durationText;
+    public TextMeshProUGUI qtyText;
+    public TextMeshProUGUI chargeText; // ‚Üê NOVO
+    public TextMeshProUGUI levelText;
+}
 
 public class SkillManager : MonoBehaviour
 {
-
     private longAttack longAttackScript;
-    private defaultAttack defaculAttackScript;
+    private defaultAttack defaultAttackScript;
     private collect collectScript;
     private p_Shield shieldScript;
 
     private bool activatedSkill;
 
+    // N√≠veis atuais
+    public int levelLong = 1;
+    public int levelDefault = 1;
+    public int levelCollect = 1;
+    public int levelShield = 1;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Listas de n√≠veis
+    public List<SkillLevelStats> longAttackLevels = new List<SkillLevelStats>();
+    public List<SkillLevelStats> defaultAttackLevels = new List<SkillLevelStats>();
+    public List<SkillLevelStats> collectLevels = new List<SkillLevelStats>();
+    public List<SkillLevelStats> shieldLevels = new List<SkillLevelStats>();
+
+    // UI das habilidades
+    public List<SkillUI> skillUISlots = new List<SkillUI>();
+
+    // Refer√™ncia ao objeto player
+    public GameObject playerObject;
+
+    // Singleton (opcional)
+    public static SkillManager Instance;
+
+    private readonly string[] skillNames = { "long", "default", "collect", "shield" };
+
+    void Awake()
     {
-        defaculAttackScript = GetComponent<defaultAttack>();
-        longAttackScript = GetComponent<longAttack>();
-        collectScript = GetComponent<collect>();
-        shieldScript = GetComponent<p_Shield>();
-
-        activatedSkill = false;
+        if (Instance == null)
+            Instance = this;
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        if (playerObject == null)
+        {
+            playerObject = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        if (playerObject != null)
+        {
+            defaultAttackScript = playerObject.GetComponentInChildren<defaultAttack>();
+            longAttackScript = playerObject.GetComponentInChildren<longAttack>();
+            collectScript = playerObject.GetComponentInChildren<collect>();
+            shieldScript = playerObject.GetComponentInChildren<p_Shield>();
+        }
+        else
+        {
+            Debug.LogError("Player n√£o encontrado! Defina manualmente no SkillManager ou use a tag 'Player'.");
+        }
+
+        activatedSkill = false;
+        UpdateAllSkillUIs();
+    }
+
     void Update()
     {
         if (!activatedSkill)
         {
             if (Input.GetMouseButton(0))
             {
-                defaculAttackScript.Shoot();
+                defaultAttackScript?.Shoot();
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                longAttackScript.Activate();
+                longAttackScript?.Activate();
             }
-
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                // CÛdigo que ser· executado ao pressionar a tecla "2"
-            }
-
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                shieldScript.Activate();
+                shieldScript?.Activate();
             }
-
             if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                collectScript.Activate();
+                if (collectScript == null)
+                {
+                    Debug.LogWarning("Script de COLETA n√£o encontrado");
+                }
+                else
+                {
+                    collectScript?.Activate();
+                }
             }
         }
     }
 
     public void skillStatus(bool status)
     {
-        activatedSkill = status; // Atualiza o status de execuÁ„o de skill, caso a condiÁ„o esteja ativada, n„o ser· possÌvel executar outras skills
+        activatedSkill = status;
         Debug.Log("Executando skill: " + activatedSkill);
+    }
+
+    public SkillLevelStats GetSkillStats(string skillName)
+    {
+        switch (skillName)
+        {
+            case "long":
+                return longAttackLevels[Mathf.Clamp(levelLong - 1, 0, longAttackLevels.Count - 1)];
+            case "default":
+                return defaultAttackLevels[Mathf.Clamp(levelDefault - 1, 0, defaultAttackLevels.Count - 1)];
+            case "collect":
+                return collectLevels[Mathf.Clamp(levelCollect - 1, 0, collectLevels.Count - 1)];
+            case "shield":
+                return shieldLevels[Mathf.Clamp(levelShield - 1, 0, shieldLevels.Count - 1)];
+            default:
+                Debug.LogWarning("Skill n√£o encontrada: " + skillName);
+                return null;
+        }
+    }
+
+    private int GetSkillLevel(string skillName)
+    {
+        return skillName switch
+        {
+            "long" => levelLong,
+            "default" => levelDefault,
+            "collect" => levelCollect,
+            "shield" => levelShield,
+            _ => 1,
+        };
+    }
+
+    public void UpgradeSkill(string skillName)
+    {
+        switch (skillName)
+        {
+            case "long":
+                if (levelLong < longAttackLevels.Count)
+                    levelLong++;
+                break;
+            case "default":
+                if (levelDefault < defaultAttackLevels.Count)
+                    levelDefault++;
+                break;
+            case "collect":
+                if (levelCollect < collectLevels.Count)
+                    levelCollect++;
+                break;
+            case "shield":
+                if (levelShield < shieldLevels.Count)
+                    levelShield++;
+                break;
+            default:
+                Debug.LogWarning("Skill inv√°lida para upgrade: " + skillName);
+                break;
+        }
+
+        UpdateAllSkillUIs();
+    }
+
+    public void UpdateAllSkillUIs()
+    {
+        for (int i = 0; i < skillUISlots.Count && i < skillNames.Length; i++)
+        {
+            var skillStats = GetSkillStats(skillNames[i]);
+            var ui = skillUISlots[i];
+
+            if (skillStats != null && ui != null)
+            {
+                ui.dmgText.text = "DMG: " + skillStats.damage;
+                ui.cooldownText.text = "COOLDOWN: " + skillStats.cooldown + "s";
+                ui.durationText.text = "DURATION: " + skillStats.duration + "s";
+                ui.qtyText.text = "QTD: " + skillStats.quantity + "x";
+                ui.chargeText.text = "CHARGE: " + skillStats.charge; // ‚Üê NOVO
+                ui.levelText.text = "" + GetSkillLevel(skillNames[i]);
+            }
+        }
     }
 }

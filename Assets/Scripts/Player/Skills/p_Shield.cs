@@ -15,7 +15,7 @@ public class p_Shield : MonoBehaviour
 
     void Start()
     {
-        skillManagerScript = GetComponent<SkillManager>();
+        skillManagerScript = SkillManager.Instance;
         cooldownActivated = false;
         shieldActive = false;
     }

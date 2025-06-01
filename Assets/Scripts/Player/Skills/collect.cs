@@ -5,11 +5,11 @@ public class collect : MonoBehaviour
 {
     public GameObject areaVisualPrefab; // ← arraste o prefab com SpriteRenderer aqui no Inspector
 
-    [SerializeField] private float scanRadius = 5f;
-    [SerializeField] private float skillTimer = 5f;
-    [SerializeField] private float damage = 25f;
-    [SerializeField] private float batteryCost = 50f;
-    [SerializeField] private float skillCooldown = 5f;
+    private float scanRadius = 10f;
+    private float skillTimer;
+    private float damage;
+    private float batteryCost;
+    private float skillCooldown;
     private bool cooldownActivated;
     private bool collecting;
 
@@ -19,13 +19,13 @@ public class collect : MonoBehaviour
     private SkillManager skillManagerScript;
     private p_Battery batteryScript;
 
-    private void Start()
+    void Start()
     {
+        ApplySkillLevel();
         scoreScript = GetComponent<score>();
         damagePerSecond = damage / skillTimer;
-        skillManagerScript = GetComponent<SkillManager>();
+        skillManagerScript = SkillManager.Instance;
         batteryScript = GetComponent<p_Battery>();
-
         batteryCostPerSecond = batteryCost / skillTimer;
         cooldownActivated = false;
         collecting = false;
@@ -36,6 +36,7 @@ public class collect : MonoBehaviour
         if (!cooldownActivated && !collecting)
         {
             StartCoroutine(collectSkill());
+            Debug.LogWarning("COLETA ATIVADA");
         }
         else Debug.LogWarning("NÃO ATIVADA. Skill já ativa ou com cooldown ativo");
     }
@@ -108,5 +109,18 @@ public class collect : MonoBehaviour
 
         cooldownActivated = false;
 
+    }
+
+    private void ApplySkillLevel()
+    {
+        var stats = SkillManager.Instance.GetSkillStats("collect");
+
+        skillTimer = stats.duration;
+        batteryCost = stats.charge; // pode ajustar para usar outro campo
+        // attackRange = stats.duration;      // se quiser, pode usar um campo específico
+        damage = stats.damage;
+        skillCooldown = stats.cooldown;
+
+        Debug.Log($"[COLETAR] Duration: {skillTimer}, Damage: {damage}, Charge: {batteryCost}, Cooldown: {skillCooldown}");
     }
 }

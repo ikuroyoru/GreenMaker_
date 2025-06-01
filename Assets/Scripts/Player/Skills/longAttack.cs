@@ -1,20 +1,19 @@
-using System.Collections;
+﻿using System.Collections;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class longAttack : MonoBehaviour
 {
-    [SerializeField] private int projectileLimit = 3;
-    [SerializeField] private float batteryCostPerShot = 50f;
+    private int projectileLimit;
+    private float batteryCost;
+    private float damage;
+    private float skillCooldown;
 
-    public float attackRange = 5f;
-    public float fireCooldown = 10f;
-    public float skillCooldown = 10f;
     private bool cooldownActivated;
-
-    [SerializeField] private GameObject missilePrefab;
-
     private bool isShooting = false;
     private int shotsFired = 0;
+
+    [SerializeField] private GameObject missilePrefab;
 
     private GameObject target;
 
@@ -25,10 +24,12 @@ public class longAttack : MonoBehaviour
     private void Awake()
     {
         movementScript = GetComponent<PlayerMovement>();
-        skillManagerScript = GetComponent<SkillManager>();
+        skillManagerScript = SkillManager.Instance;
         batteryScript = GetComponent<p_Battery>();
 
         cooldownActivated = false;
+
+        ApplySkillLevel(); // ← inicializa com o nível atual da skill
     }
 
     private void Update()
@@ -37,17 +38,17 @@ public class longAttack : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && shotsFired < projectileLimit)
         {
-            if (batteryScript.currentCharge() < batteryCostPerShot)
+            if (batteryScript.currentCharge() < batteryCost)
             {
                 Debug.LogWarning("Bateria insuficiente para atirar.");
                 return;
             }
 
-            batteryScript.UseAbility(batteryCostPerShot);
+            batteryScript.UseAbility(batteryCost);
 
             if (target == null)
             {
-                Debug.LogWarning("Nenhum alvo definido para o m�ssil.");
+                Debug.LogWarning("Nenhum alvo definido para o míssil.");
                 return;
             }
 
@@ -63,6 +64,7 @@ public class longAttack : MonoBehaviour
             if (projectileHitScript != null)
             {
                 projectileHitScript.shooter(transform.parent.gameObject.tag);
+                projectileHitScript.setDamage(damage);
             }
 
             shotsFired++;
@@ -73,27 +75,24 @@ public class longAttack : MonoBehaviour
                 StartCoroutine(setCooldown());
             }
         }
-
-
     }
 
     public void Activate()
     {
         if (!cooldownActivated)
         {
+            ApplySkillLevel(); // ← reaplica os valores ao ativar (caso o nível tenha mudado)
             Debug.LogWarning("Skill de Longo Alcance Ativada");
 
             isShooting = true;
             shotsFired = 0;
             movementScript.locked = true;
             skillManagerScript.skillStatus(true);
-            Debug.LogWarning("Skill Ativada");
         }
         else
         {
-            Debug.LogWarning("Longo Alcance N�O ATIVADO, h� cooldown ATIVO");
+            Debug.LogWarning("Longo Alcance NÃO ATIVADO, há cooldown ATIVO");
         }
-        
     }
 
     private void EndSkill()
@@ -101,7 +100,6 @@ public class longAttack : MonoBehaviour
         isShooting = false;
         movementScript.locked = false;
         skillManagerScript.skillStatus(false);
-
         Debug.Log("Skill de Longo Alcance finalizada");
     }
 
@@ -117,6 +115,17 @@ public class longAttack : MonoBehaviour
         yield return new WaitForSeconds(skillCooldown);
 
         cooldownActivated = false;
+    }
 
+    // PEGA os valores da skill baseada no nível atual definido no SkillManager
+    private void ApplySkillLevel()
+    {
+        var stats = SkillManager.Instance.GetSkillStats("long");
+
+        projectileLimit = stats.quantity;
+        batteryCost = stats.charge; // pode ajustar para usar outro campo
+        // attackRange = stats.duration;      // se quiser, pode usar um campo específico
+        damage = stats.damage;
+        skillCooldown = stats.cooldown;
     }
 }

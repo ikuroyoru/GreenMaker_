@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class projectileHit : MonoBehaviour
 {
-    private projectileStats projectileStatsScript;
     private string shooterTag;
-    private float _damage;
+    private float damage;
     void Start()
     {
-        projectileStatsScript = GetComponent<projectileStats>();
-        _damage = projectileStatsScript.damage;
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -23,7 +21,7 @@ public class projectileHit : MonoBehaviour
 
                 if (hpScript != null)
                 {
-                    hpScript.takeDamage(_damage);
+                    hpScript.takeDamage(damage);
                 }
                 destroyMissile();
             }
@@ -34,8 +32,8 @@ public class projectileHit : MonoBehaviour
 
                 if (hpScript != null)
                 {
-                    hpScript.takeDamage(_damage);
-                    Debug.Log("Dano causado ao escudo: " + _damage);
+                    hpScript.takeDamage(damage);
+                    Debug.Log("Dano causado ao escudo: " + damage);
                 }
                 destroyMissile();
             }
@@ -49,7 +47,7 @@ public class projectileHit : MonoBehaviour
 
                 if (hpScript != null)
                 {
-                    hpScript.takeDamage(_damage);
+                    hpScript.takeDamage(damage);
                 }
             }
             if (other.CompareTag("Shield"))
@@ -58,7 +56,7 @@ public class projectileHit : MonoBehaviour
 
                 if (hpScript != null)
                 {
-                    hpScript.takeDamage(_damage);
+                    hpScript.takeDamage(damage);
                 }
             }
 
@@ -70,6 +68,11 @@ public class projectileHit : MonoBehaviour
     {
         shooterTag = tag;
         // Debug.Log("Atirador: " + shooterTag);
+    }
+
+    public void setDamage(float _damage)
+    {
+        damage = _damage;
     }
 
     void destroyMissile()

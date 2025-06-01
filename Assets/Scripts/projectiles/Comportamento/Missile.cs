@@ -4,11 +4,11 @@ using UnityEngine;
 public class Missile : MonoBehaviour
 {
     public GameObject target;
-    private projectileStats projectileStatsScript;
+    [SerializeField] private float speed = 3f;
 
     void Start()
     {
-        projectileStatsScript = GetComponent<projectileStats>();
+
     }
 
     void Update()
@@ -18,7 +18,7 @@ public class Missile : MonoBehaviour
         Vector3 direction = (target.transform.position - transform.position).normalized;
 
         // Move na direção do alvo
-        transform.parent.position += direction * projectileStatsScript.speed * Time.deltaTime;
+        transform.parent.position += direction * speed * Time.deltaTime;
 
         // Alinha a rotação com a direção
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -31,13 +31,6 @@ public class Missile : MonoBehaviour
 
         string alvo = target.tag;
 
-        /*
-        if (alvo != null)
-        {
-            Debug.Log("O alvo é: " + alvo);
-        }
-        else Debug.Log("Sem alvo definido");
-        */
     }
 }
 
