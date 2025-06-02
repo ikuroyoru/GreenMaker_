@@ -24,6 +24,9 @@ public class sprites : MonoBehaviour
 
     void Update()
     {
+        if (InventoryUI.IsInventoryOpen) return;
+
+
         bool isAttacking = Input.GetMouseButton(0); // Exemplo: atacando se clicar com o botão esquerdo
         UpdateSpriteWithMouse(isAttacking);
     }

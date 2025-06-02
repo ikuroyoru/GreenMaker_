@@ -116,11 +116,10 @@ public class collect : MonoBehaviour
         var stats = SkillManager.Instance.GetSkillStats("collect");
 
         skillTimer = stats.duration;
-        batteryCost = stats.charge; // pode ajustar para usar outro campo
-        // attackRange = stats.duration;      // se quiser, pode usar um campo específico
+        batteryCost = stats.charge;
         damage = stats.damage;
         skillCooldown = stats.cooldown;
 
-        Debug.Log($"[COLETAR] Duration: {skillTimer}, Damage: {damage}, Charge: {batteryCost}, Cooldown: {skillCooldown}");
+        // Debug.Log($"[COLETAR] Duration: {skillTimer}, Damage: {damage}, Charge: {batteryCost}, Cooldown: {skillCooldown}");
     }
 }

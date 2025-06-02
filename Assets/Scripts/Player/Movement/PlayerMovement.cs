@@ -24,9 +24,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-
+        if (InventoryUI.IsInventoryOpen)
+        {
+            movement.x = 0;
+            movement.y = 0;
+            return;
+        }
+        else
+        {
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
+        }
+        
         movement = movement.normalized;
     }
 

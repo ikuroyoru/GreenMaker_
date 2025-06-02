@@ -10,7 +10,8 @@ public class SkillLevelStats
     public float cooldown;
     public float duration;
     public int quantity;
-    public int charge; // ← NOVO
+    public int charge;
+    // Ícone removido, pois agora é fixo por habilidade
 }
 
 [System.Serializable]
@@ -20,8 +21,9 @@ public class SkillUI
     public TextMeshProUGUI cooldownText;
     public TextMeshProUGUI durationText;
     public TextMeshProUGUI qtyText;
-    public TextMeshProUGUI chargeText; // ← NOVO
+    public TextMeshProUGUI chargeText;
     public TextMeshProUGUI levelText;
+    public Image icon;
 }
 
 public class SkillManager : MonoBehaviour
@@ -33,25 +35,20 @@ public class SkillManager : MonoBehaviour
 
     private bool activatedSkill;
 
-    // Níveis atuais
     public int levelLong = 1;
     public int levelDefault = 1;
     public int levelCollect = 1;
     public int levelShield = 1;
 
-    // Listas de níveis
     public List<SkillLevelStats> longAttackLevels = new List<SkillLevelStats>();
     public List<SkillLevelStats> defaultAttackLevels = new List<SkillLevelStats>();
     public List<SkillLevelStats> collectLevels = new List<SkillLevelStats>();
     public List<SkillLevelStats> shieldLevels = new List<SkillLevelStats>();
 
-    // UI das habilidades
     public List<SkillUI> skillUISlots = new List<SkillUI>();
-
-    // Referência ao objeto player
+    public List<Sprite> skillIcons = new List<Sprite>(); // ← Ícones fixos para cada habilidade (ordem: long, default, collect, shield)
     public GameObject playerObject;
 
-    // Singleton (opcional)
     public static SkillManager Instance;
 
     private readonly string[] skillNames = { "long", "default", "collect", "shield" };
@@ -87,6 +84,8 @@ public class SkillManager : MonoBehaviour
 
     void Update()
     {
+        if (InventoryUI.IsInventoryOpen) return;
+
         if (!activatedSkill)
         {
             if (Input.GetMouseButton(0))
@@ -103,14 +102,7 @@ public class SkillManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                if (collectScript == null)
-                {
-                    Debug.LogWarning("Script de COLETA não encontrado");
-                }
-                else
-                {
-                    collectScript?.Activate();
-                }
+                collectScript?.Activate();
             }
         }
     }
@@ -192,9 +184,20 @@ public class SkillManager : MonoBehaviour
                 ui.cooldownText.text = "COOLDOWN: " + skillStats.cooldown + "s";
                 ui.durationText.text = "DURATION: " + skillStats.duration + "s";
                 ui.qtyText.text = "QTD: " + skillStats.quantity + "x";
-                ui.chargeText.text = "CHARGE: " + skillStats.charge; // ← NOVO
+                ui.chargeText.text = "CHARGE: " + skillStats.charge;
                 ui.levelText.text = "" + GetSkillLevel(skillNames[i]);
+
+                // Definir o ícone fixo uma única vez
+                if (ui.icon != null && skillIcons != null && i < skillIcons.Count)
+                {
+                    ui.icon.sprite = skillIcons[i];
+                }
             }
         }
     }
+
+    public void UpgradeLongSkill() => UpgradeSkill("long");
+    public void UpgradeDefaultSkill() => UpgradeSkill("default");
+    public void UpgradeCollectSkill() => UpgradeSkill("collect");
+    public void UpgradeShieldSkill() => UpgradeSkill("shield");
 }

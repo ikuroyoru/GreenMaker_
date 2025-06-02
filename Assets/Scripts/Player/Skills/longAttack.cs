@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
@@ -71,7 +73,6 @@ public class longAttack : MonoBehaviour
 
             if (shotsFired >= projectileLimit)
             {
-                EndSkill();
                 StartCoroutine(setCooldown());
             }
         }
@@ -110,6 +111,10 @@ public class longAttack : MonoBehaviour
 
     public IEnumerator setCooldown()
     {
+        yield return new WaitForSeconds(0.5f); //Para evitar execuções simultaneas de habilidades
+
+        EndSkill();
+
         cooldownActivated = true;
 
         yield return new WaitForSeconds(skillCooldown);

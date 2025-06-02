@@ -636,7 +636,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 77258354}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 628883139}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: UpgradeDefaultSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &77258354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1711,7 +1723,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 280795857}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1721,8 +1733,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 352.3199, y: 40.35001}
-  m_SizeDelta: {x: -389.78, y: -75.91}
+  m_AnchoredPosition: {x: 352, y: 39}
+  m_SizeDelta: {x: -389.7801, y: -75.910034}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &280795859
 MonoBehaviour:
@@ -1767,7 +1779,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 280795860}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 628883139}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: UpgradeCollectSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &280795860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59810,15 +59834,15 @@ MonoBehaviour:
   levelCollect: 1
   levelShield: 1
   longAttackLevels:
-  - damage: 10
-    cooldown: 10
+  - damage: 50
+    cooldown: 30
     duration: 10
     quantity: 2
     charge: 50
-  - damage: 20
-    cooldown: 5
+  - damage: 50
+    cooldown: 30
     duration: 10
-    quantity: 5
+    quantity: 3
     charge: 55
   defaultAttackLevels:
   - damage: 5
@@ -59832,7 +59856,7 @@ MonoBehaviour:
     quantity: 4
     charge: 6
   collectLevels:
-  - damage: 5
+  - damage: 25
     cooldown: 30
     duration: 5
     quantity: 1
@@ -59843,16 +59867,16 @@ MonoBehaviour:
     quantity: 1
     charge: 60
   shieldLevels:
-  - damage: 0
-    cooldown: 0
-    duration: 0
-    quantity: 0
-    charge: 0
-  - damage: 0
-    cooldown: 0
-    duration: 0
-    quantity: 0
-    charge: 0
+  - damage: 50
+    cooldown: 20
+    duration: 15
+    quantity: 1
+    charge: 100
+  - damage: 75
+    cooldown: 20
+    duration: 15
+    quantity: 1
+    charge: 120
   skillUISlots:
   - dmgText: {fileID: 1645661022}
     cooldownText: {fileID: 327483385}
@@ -61302,7 +61326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_BlockingObjects: 1
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -61350,7 +61374,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1108474314
 RectTransform:
@@ -62075,11 +62099,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaVisualPrefab: {fileID: 1053721202094775595, guid: c313ae984d8763c44806d79b1ff97d73, type: 3}
-  scanRadius: 5
-  skillTimer: 5
-  damage: 25
-  batteryCost: 50
-  skillCooldown: 5
 --- !u!114 &1204984853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62321,7 +62340,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1223740859}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 628883139}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: UpgradeLongSkill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1223740859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64816,8 +64847,8 @@ RectTransform:
   m_Children:
   - {fileID: 1575139455}
   - {fileID: 187210496}
-  - {fileID: 280795858}
   - {fileID: 651458586}
+  - {fileID: 280795858}
   m_Father: {fileID: 301600065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -64863,6 +64894,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1827913501}
   m_CullTransparentMesh: 1
+--- !u!1 &1861583218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1861583221}
+  - component: {fileID: 1861583220}
+  - component: {fileID: 1861583219}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1861583219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861583218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!114 &1861583220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861583218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &1861583221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861583218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1885784506
 GameObject:
   m_ObjectHideFlags: 0
@@ -66404,6 +66514,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1861583221}
   - {fileID: 628883136}
   - {fileID: 501700361}
   - {fileID: 519420032}

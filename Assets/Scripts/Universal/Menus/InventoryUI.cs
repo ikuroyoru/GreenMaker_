@@ -1,13 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject inventoryPanel; // Arraste aqui o painel do invent�rio na Unity
+    public GameObject inventoryPanel;
     private bool isOpen = false;
+
+    public static bool IsInventoryOpen { get; private set; } // ← Adicionado
 
     void Start()
     {
         inventoryPanel.SetActive(isOpen);
+        IsInventoryOpen = isOpen;
     }
 
     void Update()
@@ -16,6 +19,7 @@ public class InventoryUI : MonoBehaviour
         {
             isOpen = !isOpen;
             inventoryPanel.SetActive(isOpen);
+            IsInventoryOpen = isOpen; // ← Atualiza o estado global
         }
     }
 }
