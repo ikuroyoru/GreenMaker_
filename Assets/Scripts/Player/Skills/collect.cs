@@ -7,7 +7,7 @@ public class collect : MonoBehaviour
 
     private float scanRadius = 10f;
     private float skillTimer;
-    private float damage;
+    private int damage;
     private float batteryCost;
     private float skillCooldown;
     private bool cooldownActivated;
@@ -80,7 +80,7 @@ public class collect : MonoBehaviour
 
                         if (trashScript != null)
                         {
-                            trashScript.TakeDamage(damagePerSecond, player);
+                            trashScript.TakeDamage(damage, player);
                             scoreScript.updateGeneralPoints(points);
                         }
                     }

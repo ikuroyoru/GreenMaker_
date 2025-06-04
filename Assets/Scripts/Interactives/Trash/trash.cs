@@ -3,12 +3,14 @@ using UnityEngine.UI;
 
 public class trash : MonoBehaviour
 {
-    public float maxHealth;
-    private float currentHealth;
+    public int maxHealth;
+    private int currentHealth;
     public Slider slider;
     private Materials materialScript;
 
     private GameManager gameManager;
+
+    private collectv2 collectScript;
 
     private void Start()
     {
@@ -24,11 +26,11 @@ public class trash : MonoBehaviour
     }
 
 
-    public void TakeDamage(float amount, GameObject player)
+    public void TakeDamage(int amount, GameObject player)
     {
         currentHealth -= amount;
         slider.value = currentHealth;
-        // Debug.LogWarning("HP: " + currentHealth);
+        Debug.LogWarning("TRASH HP: " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -55,4 +57,39 @@ public class trash : MonoBehaviour
             Debug.LogWarning("Player é nulo.");
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        HandleCollectTrigger(other, true);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        HandleCollectTrigger(other, false);
+    }
+
+    private void HandleCollectTrigger(Collider2D other, bool entering)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        collectv2 collectScript = other.GetComponentInChildren<collectv2>();
+
+        if (collectScript != null)
+        {
+            collectScript.verifyStatus(gameObject, entering);
+
+            // Debug.Log($"[Coleta] {(entering ? "Entrou" : "Saiu")} da área de coleta: {other.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[Coleta] Script 'collectv2' não encontrado em {other.name}.");
+        }
+    }
+
+    public int currentHP()
+    {
+        return currentHealth;
+    }
+
+
 }

@@ -30,7 +30,7 @@ public class SkillManager : MonoBehaviour
 {
     private longAttack longAttackScript;
     private defaultAttack defaultAttackScript;
-    private collect collectScript;
+    private collectv2 collectScript;
     private p_Shield shieldScript;
 
     private bool activatedSkill;
@@ -70,7 +70,7 @@ public class SkillManager : MonoBehaviour
         {
             defaultAttackScript = playerObject.GetComponentInChildren<defaultAttack>();
             longAttackScript = playerObject.GetComponentInChildren<longAttack>();
-            collectScript = playerObject.GetComponentInChildren<collect>();
+            collectScript = playerObject.GetComponentInChildren<collectv2>();
             shieldScript = playerObject.GetComponentInChildren<p_Shield>();
         }
         else
