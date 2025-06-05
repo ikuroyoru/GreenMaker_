@@ -1,11 +1,12 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class trash : MonoBehaviour
 {
+    public string collectableName; 
     public int maxHealth;
     private int currentHealth;
-    public Slider slider;
     private Materials materialScript;
 
     private GameManager gameManager;
@@ -15,22 +16,18 @@ public class trash : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
-        slider.maxValue = maxHealth;
-
         gameManager = GameObject.Find("GameManager")?.GetComponent<GameManager>();
         if (gameManager == null)
         {
             Debug.LogWarning("GameManager não encontrado.");
         }
-        else Debug.LogWarning("GameManager Encontrado");
+        // else Debug.LogWarning("GameManager Encontrado");
     }
 
 
     public void TakeDamage(int amount, GameObject player)
     {
         currentHealth -= amount;
-        slider.value = currentHealth;
-        Debug.LogWarning("TRASH HP: " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -45,7 +42,7 @@ public class trash : MonoBehaviour
 
             if (materialScript != null)
             {
-                materialScript.gerarPlastico(player);
+                materialScript.StartCoroutine(materialScript.generate(player));
             }
             else
             {
@@ -68,7 +65,7 @@ public class trash : MonoBehaviour
         HandleCollectTrigger(other, false);
     }
 
-    private void HandleCollectTrigger(Collider2D other, bool entering)
+    private void HandleCollectTrigger(Collider2D other, bool entering) // Atualiza o Status se tem ou não um coletável por perto do jogador
     {
         if (!other.CompareTag("Player")) return;
 

@@ -1,29 +1,62 @@
+using System.Collections;
 using UnityEngine;
 
 public class Materials : MonoBehaviour
 {
     private Inventory inventoryScript;
-    private int qtd;
+    private const int qtd = 1;
 
-    private void Start()
+    [SerializeField] private Sprite plasticIcon;
+    [SerializeField] private Sprite eletronicIcon;
+    [SerializeField] private Sprite metalIcon;
+    [SerializeField] private Sprite mechanicIcon;
+
+    public IEnumerator generate(GameObject player)
     {
-        qtd = 1;
-    }
-    public void gerarPlastico(GameObject player)
-    {
-        if (player != null)
+        if (player == null)
         {
+            Debug.LogWarning("Sem player");
+            yield break;
+        }
 
+        if (inventoryScript == null)
+        {
             inventoryScript = player.GetComponentInChildren<Inventory>();
 
-            int dropChance = 500; // Chance de gerar um plastico
-            int chance = Random.Range(1, 1001); // Gera um número entre 1 e 1000
-
-            if (chance <= dropChance)
+            if (inventoryScript == null)
             {
-                inventoryScript.updatePlastico(qtd, player);
+                Debug.LogWarning("Inventory não encontrado no player.");
+                yield break;
             }
         }
-        else Debug.LogWarning("Sem player");
+
+        int roll = Random.Range(1, 116); // de 1 até 115 inclusivo
+
+        if (roll <= 50)
+        {
+            inventoryScript.resetFeedback();
+            inventoryScript.updatePlastico(qtd, player, plasticIcon);
+            Debug.Log("Plástico gerado!");
+        }
+        else if (roll <= 80)
+        {
+            inventoryScript.resetFeedback();
+            inventoryScript.updateMetal(qtd, player, metalIcon);
+            Debug.Log("Metal gerado!");
+        }
+        else if (roll <= 95)
+        {
+            inventoryScript.resetFeedback();
+            inventoryScript.updateEletronico(qtd, player, eletronicIcon);
+            Debug.Log("Eletrônico gerado!");
+        }
+        else
+        {
+            inventoryScript.resetFeedback();
+            inventoryScript.updateMecanica(qtd, player, mechanicIcon);
+            Debug.Log("Parte Mecânica gerada!");
+        }
+
+        yield break;
     }
 }

@@ -15,12 +15,19 @@ public class collectv2 : MonoBehaviour
     private trash collectableScript;
     private p_Battery batteryScript;
 
+    [SerializeField] private GameObject uiPanel;
+    private collecting UIcollectScript;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         batteryScript = GetComponent<p_Battery>();
         skillManagerScript = SkillManager.Instance;
         ApplySkillLevel();
+
+        if (uiPanel != null)
+            uiPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -57,25 +64,54 @@ public class collectv2 : MonoBehaviour
 
     public IEnumerator collecting()
     {
+        UIcollectScript = uiPanel.GetComponent<collecting>();
+
+        if (UIcollectScript != null)
+        {
+            uiPanel.SetActive(true);
+            chargeUI(collectableScript.currentHP());
+            UIcollectScript.UpdateTimer(collectTimer); // Começa com valor cheio
+        }
+        else
+        {
+            Debug.Log("Script da UI de coleta NÃO ENCONTRADO");
+            yield break;
+        }
+
         GameObject player = transform.root.gameObject;
 
-        int collectable_HP = collectableScript.currentHP();
-        Debug.Log("TRASH HP: " + collectable_HP);
-        while (verify && collectable_HP > 0)
+        while (verify && collectableScript.currentHP() > 0)
         {
-            yield return new WaitForSeconds(collectTimer);
+            float timer = 0f;
+
+            while (timer < collectTimer)
+            {
+                if (!verify) break;
+
+                timer += Time.deltaTime;
+                float remaining = Mathf.Clamp(collectTimer - timer, 0f, collectTimer); // Evita valores negativos
+                UIcollectScript.UpdateTimer(remaining);
+
+                yield return null;
+            }
+
+            if (!verify) break;
+
             collectableScript.TakeDamage(damage, player);
             batteryScript.UseAbility(batteryCost);
-        }
-        if (!verify)
-        {
-            skillManagerScript.skillStatus(false);
-            Debug.Log("Verifiy: " + verify);
+
+            int _hpC = collectableScript.currentHP();
+            chargeUI(_hpC);
+            UIcollectScript.UpdateTimer(collectTimer); // Reseta o timer para o valor cheio
         }
 
-
-            yield break;
+        skillManagerScript.skillStatus(false);
+        uiPanel.SetActive(false);
+        yield break;
     }
+
+
+
 
     private void ApplySkillLevel()
     {
@@ -94,6 +130,11 @@ public class collectv2 : MonoBehaviour
         collectableScript = collectable.GetComponent<trash>();
 
         // Debug.Log($"[Collect] Status: {(verify ? "ATIVO" : "INATIVO")}, objeto: {_collectable.name}");
+    }
+
+    void chargeUI(int _hpC)
+    {
+        UIcollectScript.UpdateUI(_hpC, collectableScript.maxHealth, collectTimer, collectableScript.collectableName);
     }
 
 }
